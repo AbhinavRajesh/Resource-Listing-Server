@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const session = require("express-session");
 
-// const apiRouter = require("./routes/api");
+const apiRouter = require("./routes/api");
 const authRouter = require("./routes/auth");
 
 const PORT = process.env.PORT || 5000;
@@ -45,6 +45,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/api/v1", apiRouter);
 
 app.listen(PORT, () =>
   console.log(`Server Running at http://localhost:${PORT}`)

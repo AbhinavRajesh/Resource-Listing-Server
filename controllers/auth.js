@@ -23,7 +23,6 @@ exports.signup = async (req, res) => {
           .then((result) => console.log(result))
           .catch((err) => console.log(`ERROR : ${err}`));
         const token = jwt.sign({ user: newUser }, process.env.PASSWORD_HASH);
-        // res.redirect(`http://localhost:3000/auth?token=${token}`);
         return res.status(200).send({ token: token });
       }
     });
@@ -40,14 +39,14 @@ exports.login = async (req, res) => {
         if (err) {
           console.log(result);
           console.log(`ERROR: ${err}`);
-          return res.status(401).send({ error: "Authentication failed" });
+          return res.status(200).send({ error: "Authentication failed" });
         }
         if (result) {
           const token = jwt.sign({ user: user }, process.env.PASSWORD_HASH);
           return res.status(200).send({ token: token });
         }
       });
-    } else return res.status(400).json({ error: "Authentication failed" });
+    } else return res.status(200).json({ error: "Authentication failed" });
   });
 };
 

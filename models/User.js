@@ -30,6 +30,9 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
   },
+  posts: {
+    type: Array,
+  },
 });
 
 module.exports = mongoose.model("User", UserSchema);
