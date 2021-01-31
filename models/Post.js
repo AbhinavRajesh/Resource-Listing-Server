@@ -13,6 +13,10 @@ const postSchema = new mongoose.Schema({
     type: Array,
     required: true,
   },
+  tags_lower: {
+    type: Array,
+    required: true,
+  },
   comments: {
     type: Array,
   },
