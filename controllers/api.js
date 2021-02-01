@@ -1,10 +1,8 @@
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
-const unfurled = require("unfurled");
 
 const Post = require("../models/Post");
 const User = require("../models/User");
-const { post } = require("../routes/api");
 
 exports.addPost = (req, res) => {
   console.log("HERE: ", req.body);
@@ -90,7 +88,6 @@ exports.getSearchPosts = (req, res) => {
         return res
           .status(200)
           .send({ error: "Some Error Occured While fetching the posts :(" });
-      let updatedPosts = [];
       if (posts) {
         const updatedPosts = posts.map(async (post) => {
           const updatedPost = await getAuthorLinks(post);
@@ -100,4 +97,32 @@ exports.getSearchPosts = (req, res) => {
         return res.status(200).send({ posts: result });
       }
     });
+};
+
+const getPost = async (id) => {
+  const post = await Post.findById({ _id: mongoose.Types.ObjectId(id) });
+  if (post !== null) {
+    const updatedPost = await getAuthorLinks(post);
+    return updatedPost;
+  }
+};
+
+exports.getProfilePosts = (req, res) => {
+  User.findById({ _id: req.userData._id }, async (err, user) => {
+    if (err)
+      return res.status(200).send({
+        error:
+          "Some Error Occured while fetching the posts. Please Try Again Later!",
+      });
+    if (user) {
+      const result = user.posts.map(async (postId) => {
+        const updatedPost = await getPost(postId);
+        return updatedPost;
+      });
+      const posts = await Promise.all(result);
+      return res.status(200).send({
+        posts: posts,
+      });
+    }
+  });
 };
