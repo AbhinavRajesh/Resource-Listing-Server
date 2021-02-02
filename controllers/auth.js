@@ -9,7 +9,7 @@ exports.signup = async (req, res) => {
   if (req.body.password === req.body.cpassword) {
     let newUser = new User({
       displayName: req.body.displayName,
-      image: req.body.image,
+      image: `https://ui-avatars.com/api/?name=${req.body.displayName}`,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,

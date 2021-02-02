@@ -126,3 +126,24 @@ exports.getProfilePosts = (req, res) => {
     }
   });
 };
+
+exports.getAccountDetails = (req, res) => {
+  User.findById({ _id: req.params.id }, async (err, user) => {
+    if (err)
+      return res.status(200).send({
+        error:
+          "Some Error Occured while fetching the posts. Please Try Again Later!",
+      });
+    if (user) {
+      const result = user.posts.map(async (postId) => {
+        const updatedPost = await getPost(postId);
+        return updatedPost;
+      });
+      const posts = await Promise.all(result);
+      return res.status(200).send({
+        user: user,
+        posts: posts,
+      });
+    }
+  });
+};
