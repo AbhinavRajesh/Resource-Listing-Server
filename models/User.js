@@ -33,6 +33,9 @@ const UserSchema = new mongoose.Schema({
   posts: {
     type: Array,
   },
+  savedPost: {
+    type: Array,
+  },
 });
 
 module.exports = mongoose.model("User", UserSchema);

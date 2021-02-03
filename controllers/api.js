@@ -48,12 +48,17 @@ const getAuthorLinks = async (post) => {
   post.resource.replace(urlRegex, (url) => {
     links.push(url);
   });
+  let saved = false;
+  user.savedPost.map((saveId) => {
+    if (post._id == saveId) saved = true;
+  });
   post._doc = {
     ...post._doc,
     links: links,
     author: user.displayName,
     image: user.image,
     userId: user._id,
+    saved: saved,
   };
   return post;
 };
@@ -67,7 +72,6 @@ exports.getPosts = (req, res) => {
         return res
           .status(200)
           .send({ error: "Some Error Occured While fetching the posts :(" });
-      let updatedPosts = [];
       if (posts) {
         const updatedPosts = posts.map(async (post) => {
           const updatedPost = await getAuthorLinks(post);
@@ -101,10 +105,8 @@ exports.getSearchPosts = (req, res) => {
 
 const getPost = async (id) => {
   const post = await Post.findById({ _id: mongoose.Types.ObjectId(id) });
-  if (post !== null) {
-    const updatedPost = await getAuthorLinks(post);
-    return updatedPost;
-  }
+  const updatedPost = await getAuthorLinks(post);
+  return updatedPost;
 };
 
 exports.getProfilePosts = (req, res) => {
@@ -121,7 +123,7 @@ exports.getProfilePosts = (req, res) => {
       });
       const posts = await Promise.all(result);
       return res.status(200).send({
-        posts: posts,
+        posts: posts.reverse(),
       });
     }
   });
@@ -142,7 +144,58 @@ exports.getAccountDetails = (req, res) => {
       const posts = await Promise.all(result);
       return res.status(200).send({
         user: user,
-        posts: posts,
+        posts: posts.reverse(),
+      });
+    }
+  });
+};
+
+exports.toggleSaved = (req, res) => {
+  User.findById({ _id: req.userData._id }, (err, user) => {
+    if (err)
+      return res
+        .status(200)
+        .send({ error: "Some Error Occured Try again later!" });
+    if (user) {
+      let found = false;
+      user.savedPost.filter((postId) => {
+        postId != req.params.id;
+        if (postId == req.params.id) found = true;
+      });
+      if (!found) {
+        user.savedPost.push(req.params.id);
+      }
+      user
+        .save()
+        .then((result) => {
+          console.log(result);
+          return res.status(200).send({ message: "Successful" });
+        })
+        .catch((err) => {
+          return res
+            .status(200)
+            .send({ error: "Server Error! Try again later!" });
+        });
+    }
+  });
+};
+
+exports.getSavedPosts = (req, res) => {
+  User.findById({ _id: req.userData._id }, async (err, user) => {
+    if (err)
+      return res.status(200).send({
+        error:
+          "Some Error Occured while fetching the saved posts. Please Try Again Later!",
+      });
+    if (user) {
+      const result = user.savedPost.map(async (postId) => {
+        const updatedPost = await getPost(postId);
+        return updatedPost;
+      });
+      const posts = await Promise.all(result);
+      console.log(posts);
+      return res.status(200).send({
+        posts: posts.reverse(),
       });
     }
   });
