@@ -5,7 +5,6 @@ const Post = require("../models/Post");
 const User = require("../models/User");
 
 exports.addPost = (req, res) => {
-  console.log("HERE: ", req.body);
   let tags_lower = [];
   req.body.tags.map((tag) => {
     tags_lower.push(tag.toLowerCase());
@@ -66,7 +65,6 @@ const getAuthorLinks = async (post) => {
 exports.getPosts = (req, res) => {
   Post.find({})
     .sort({ createdAt: -1 })
-    .limit(20)
     .exec(async (err, posts) => {
       if (err)
         return res
@@ -86,12 +84,13 @@ exports.getPosts = (req, res) => {
 exports.getSearchPosts = (req, res) => {
   Post.find({ tags_lower: { $in: [req.params.search.toLowerCase()] } })
     .sort({ createdAt: -1 })
-    .limit(20)
     .exec(async (err, posts) => {
-      if (err)
+      if (err) {
+        console.log(err);
         return res
           .status(200)
           .send({ error: "Some Error Occured While fetching the posts :(" });
+      }
       if (posts) {
         const updatedPosts = posts.map(async (post) => {
           const updatedPost = await getAuthorLinks(post);
