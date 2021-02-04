@@ -4,6 +4,9 @@
 
 <p>Server for <a href="https://resourcelisting.netlify.app" target="_blank">Aspire</a>, A resource sharing website where users can share their curated list of learning resources</p>
 
+<p><a href="https://github.com/AbhinavRajesh/Resource-Listing-Client" target="_blank" >Code for Client</a></p>
+<p><a href="https://resourcelisting.netlify.app" target="_blank">Client</a></p>
+
 ## 🛠 Installation & Set Up
 
 <b>Required Node version: 14 or higher</b>
