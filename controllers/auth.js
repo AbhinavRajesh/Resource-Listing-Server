@@ -52,7 +52,7 @@ exports.login = async (req, res) => {
 
 exports.authSuccess = (req, res) => {
   const token = jwt.sign({ user: req.user }, process.env.PASSWORD_HASH);
-  res.redirect(`http://localhost:3000/auth?token=${token}`);
+  res.redirect(`https://resourcelisting.netlify.app/auth?token=${token}`);
 };
 
 exports.currentUser = (req, res, next) => {

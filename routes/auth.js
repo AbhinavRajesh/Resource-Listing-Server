@@ -25,7 +25,7 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: `http://localhost:3000/auth?error=Try Email and Password Signin with that account`,
+    failureRedirect: `https://resourcelisting.netlify.app/auth?error=Try Email and Password Signin with that account`,
   }),
   (req, res) => {
     res.redirect("/auth/success");
